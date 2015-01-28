@@ -14,5 +14,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public function bootstrap($app)
     {
+        \Yii::setAlias('madmin', __DIR__);
     }
 }
