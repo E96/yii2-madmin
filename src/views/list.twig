@@ -1,12 +1,10 @@
 {{ set(this, 'title', 'Список ' ~ modelTitleForms[2]) }}
 <div class="place-index">
-
     <h1>{{ this.title }}</h1>
 
     <p>
         <a class="btn btn-primary" href="{{ path(['create']) }}">
-            <span class="glyphicon glyphicon-plus white"></span>
-            Добавить {{ modelTitleForms[0] }}
+            <span class="glyphicon glyphicon-plus white"></span>Добавить {{ modelTitleForms[0] }}
         </a>
     </p>
 

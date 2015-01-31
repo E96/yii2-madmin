@@ -4,12 +4,16 @@ namespace e96\madmin\controllers;
 
 
 use e96\madmin\helpers\PhpMorphy;
+use kartik\builder\Form;
 use yii\db\ActiveRecord;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\grid\ActionColumn;
 use yii\grid\SerialColumn;
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 
 class MAdminController extends Controller
 {
@@ -67,7 +71,7 @@ class MAdminController extends Controller
     public function actionIndex()
     {
         /** @var ActiveRecord $searchModel */
-        $searchModel = \Yii::createObject($this->getModelClassName().'Search');
+        $searchModel = \Yii::createObject($this->getModelClassName() . 'Search');
         /** @noinspection PhpUndefinedMethodInspection */
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
@@ -81,20 +85,43 @@ class MAdminController extends Controller
 
     public function actionCreate()
     {
+        /** @var ActiveRecord $model */
+        $model = \Yii::createObject($this->getModelClassName());
 
+        return $this->editModel($model);
     }
 
-    public function actionView()
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+
+        return $this->editModel($model);
+    }
+
+    /**
+     * @param ActiveRecord $model
+     * @return string|\yii\web\Response
+     */
+    protected function editModel($model)
+    {
+        if ($model->load(\Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect($this->getReturnUrl());
+        } else {
+            return $this->render('@madmin/views/edit.twig', [
+                'model' => $model,
+                'returnUrl' => $this->getReturnUrl(),
+                'modelTitleForms' => $this->modelTitleForms,
+                'formElements' => $this->getFormElements($model),
+            ]);
+        }
+    }
+
+    public function actionView($id)
     {
 
     }
 
-    public function actionUpdate()
-    {
-
-    }
-
-    public function actionDelete()
+    public function actionDelete($id)
     {
 
     }
@@ -103,6 +130,8 @@ class MAdminController extends Controller
      * Format same as GridView::$columns
      * @param ActiveRecord $model
      * @return array
+     *
+     * @see GridView::$columns
      */
     public function getTableColumns($model)
     {
@@ -111,9 +140,100 @@ class MAdminController extends Controller
             unset($attributes[$pk]);
         }
         $columns = array_keys($attributes);
-        $columns[] = ['class' => ActionColumn::className()];
+        $columns[] = $this->getActionColumn();
         array_unshift($columns, ['class' => SerialColumn::className()]);
 
         return $columns;
+    }
+
+    /**
+     * @return array
+     */
+    public function getActionColumn()
+    {
+        return [
+            'class' => ActionColumn::className(),
+            'template' => '{update} {delete}',
+        ];
+    }
+
+    /**
+     * @param ActiveRecord $model
+     * @return array
+     */
+    public function getFormElements($model)
+    {
+        $res = [];
+        $attributes = $model->getAttributes();
+        foreach ($model->getTableSchema()->primaryKey as $pk) {
+            unset($attributes[$pk]);
+        }
+        $attributes = array_keys($attributes);
+        foreach ($attributes as $attribute) {
+            $res[$attribute]['type'] = Form::INPUT_TEXT;
+        }
+        $res[] = $this->getActionRow($model);
+
+        return $res;
+    }
+
+    /**
+     * @param ActiveRecord $model
+     * @return array
+     */
+    public function getActionRow($model)
+    {
+        $html = '';
+        $icon = '<span class="glyphicon glyphicon-ok"></span>';
+        $html.= Html::submitButton(
+            $icon . ($model->isNewRecord ? 'Создать' : 'Сохранить'),
+            [
+                'class' => 'btn btn-primary',
+            ]
+        );
+        $icon = '<span class="glyphicon glyphicon-remove"></span>';
+        $html.= ' ' . Html::a(
+                $icon . ($model->isNewRecord ? 'Не создавать' : 'Отменить изменения'),
+                $this->getReturnUrl(),
+                [
+                    'class' => 'btn btn-default',
+                ]
+            );
+        $html = "<div class=\"form-group\"><div class=\"col-md-offset-2 col-md-10\">$html</div></div>";
+        return [
+            'type' => Form::INPUT_RAW,
+            'value' => $html,
+        ];
+    }
+
+    /**
+     * @param mixed $id
+     * @return ActiveRecord
+     * @throws NotFoundHttpException
+     */
+    protected function findModel($id)
+    {
+        $model = call_user_func($this->getModelClassName() . '::findOne', $id);
+        if ($model === null) {
+            throw new NotFoundHttpException('Модель не найдена');
+        } else {
+            return $model;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getReturnUrl()
+    {
+        $returnUrl = \Yii::$app->request->post('referrer');
+        if (empty($returnUrl)) {
+            $returnUrl = \Yii::$app->request->referrer;
+        }
+        if (empty($returnUrl)) {
+            $returnUrl = Url::to([$this->uniqueId . '/index']);
+        }
+
+        return $returnUrl;
     }
 }
