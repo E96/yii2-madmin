@@ -1,8 +1,8 @@
-{{ set(this, 'title', (model.isNewRecord ? 'Создание ' : 'Редактирование ')~ modelTitleForms[1]) }}
+{{ set(this, 'title', (model.isNewRecord ? 'Создание ' : 'Редактирование ') ~ modelTitleForms[1]) }}
 {{ use('e96/madmin/MAdminAsset') }}
 {{ register_m_admin_asset() }}
 
-<div class="place-update">
+<div class="update">
     <h1>{{ this.title }}</h1>
 
     {{ use('kartik/form/ActiveForm') }}

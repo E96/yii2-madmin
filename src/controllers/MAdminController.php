@@ -128,7 +128,11 @@ class MAdminController extends Controller
 
     public function actionView($id)
     {
-
+        return $this->render('@madmin/views/view.twig', [
+            'model' => $this->findModel($id),
+            'modelTitleForms' => $this->modelTitleForms,
+//            'returnUrl' => $this->getReturnUrl(),
+        ]);
     }
 
     public function actionDelete($id)
