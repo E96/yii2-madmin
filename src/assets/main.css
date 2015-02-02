@@ -1,0 +1,20 @@
+.not-set {
+    color: #ccc;
+    font-style: italic;
+}
+span.glyphicon {
+    font-size: 12px;
+}
+.btn span.glyphicon {
+    margin-right: 0.5em;
+}
+h1 {
+    font-weight: bold;
+}
+table span.glyphicon {
+    padding: 4px;
+}
+.action-column {
+    width:1px;
+    white-space: nowrap;
+}
