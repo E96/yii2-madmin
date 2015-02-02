@@ -5,7 +5,7 @@ namespace e96\madmin;
 
 use yii\web\AssetBundle;
 
-class Asset extends AssetBundle
+class MAdminAsset extends AssetBundle
 {
     public $sourcePath = '@e96/madmin/assets';
     public $css = [
