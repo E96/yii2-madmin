@@ -35,6 +35,14 @@ class MAdminController extends Controller
         return ActiveRecord::className();
     }
 
+    /**
+     * @return string
+     */
+    public function getSearchModelClass()
+    {
+        return $this->getManagedModelClass() . 'Search';
+    }
+
     public function init()
     {
         parent::init();
@@ -71,7 +79,7 @@ class MAdminController extends Controller
     public function actionIndex()
     {
         /** @var ActiveRecord $searchModel */
-        $searchModel = \Yii::createObject($this->getManagedModelClass() . 'Search');
+        $searchModel = \Yii::createObject($this->getSearchModelClass());
         /** @noinspection PhpUndefinedMethodInspection */
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
