@@ -5,6 +5,7 @@ namespace e96\madmin\controllers;
 
 use e96\madmin\helpers\PhpMorphy;
 use kartik\builder\Form;
+use Yii;
 use yii\db\ActiveRecord;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -79,9 +80,9 @@ class MAdminController extends Controller
     public function actionIndex()
     {
         /** @var ActiveRecord $searchModel */
-        $searchModel = \Yii::createObject($this->getSearchModelClass());
+        $searchModel = Yii::createObject($this->getSearchModelClass());
         /** @noinspection PhpUndefinedMethodInspection */
-        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('@madmin/views/list.twig', [
             'searchModel' => $searchModel,
@@ -94,7 +95,7 @@ class MAdminController extends Controller
     public function actionCreate()
     {
         /** @var ActiveRecord $model */
-        $model = \Yii::createObject($this->getManagedModelClass());
+        $model = Yii::createObject($this->getManagedModelClass());
 
         return $this->editModel($model);
     }
@@ -113,7 +114,7 @@ class MAdminController extends Controller
     protected function editModel($model)
     {
         // validate() && save(false) because of CantSave exception
-        if ($model->load(\Yii::$app->request->post()) && $model->validate() && $model->save(false)) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->save(false)) {
             return $this->redirect($this->getReturnUrl());
         } else {
             return $this->render('@madmin/views/edit.twig', [
@@ -243,9 +244,9 @@ class MAdminController extends Controller
      */
     public function getReturnUrl()
     {
-        $returnUrl = \Yii::$app->request->post('_returnUrl');
+        $returnUrl = Yii::$app->request->post('_returnUrl');
         if (empty($returnUrl)) {
-            $returnUrl = \Yii::$app->request->referrer;
+            $returnUrl = Yii::$app->request->referrer;
         }
         if (empty($returnUrl)) {
             $returnUrl = Url::to([$this->uniqueId . '/index']);
