@@ -104,7 +104,8 @@ class MAdminController extends Controller
      */
     protected function editModel($model)
     {
-        if ($model->load(\Yii::$app->request->post()) && $model->save()) {
+        // validate() && save(false) because of CantSave exception
+        if ($model->load(\Yii::$app->request->post()) && $model->validate() && $model->save(false)) {
             return $this->redirect($this->getReturnUrl());
         } else {
             return $this->render('@madmin/views/edit.twig', [
