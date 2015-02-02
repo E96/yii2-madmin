@@ -163,8 +163,11 @@ class MAdminController extends Controller
     }
 
     /**
+     * Format same as kartik\builder\Form::$attributes
      * @param ActiveRecord $model
      * @return array
+     *
+     * @see kartik\builder\Form::$attributes
      */
     public function getFormElements($model)
     {
