@@ -11,7 +11,7 @@
     {% set form = activeForm_begin({
         type: 'horizontal',
     }) %}
-    {{ html.hiddenInput('returnUrl', returnUrl) | raw }}
+    {{ html.hiddenInput('_returnUrl', returnUrl) | raw }}
     {{ form_widget({
         model: model,
         form: form,

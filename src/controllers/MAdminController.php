@@ -231,7 +231,7 @@ class MAdminController extends Controller
      */
     public function getReturnUrl()
     {
-        $returnUrl = \Yii::$app->request->post('referrer');
+        $returnUrl = \Yii::$app->request->post('_returnUrl');
         if (empty($returnUrl)) {
             $returnUrl = \Yii::$app->request->referrer;
         }
