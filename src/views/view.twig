@@ -1,5 +1,4 @@
 {{ set(this, 'title', 'Просмотр ' ~ modelTitleForms[1]) }}
-{{ use('yii/widgets/DetailView') }}
 {{ use('e96/madmin/MAdminAsset') }}
 {{ register_m_admin_asset() }}
 
@@ -10,18 +9,17 @@
         {#{{ html.a('<span class="glyphicon glyphicon-arrow-left"></span>Вернуться', returnUrl, {#}
             {#class: 'btn btn-default',#}
         {#}) | raw }}#}
-        {{ html.a('<span class="glyphicon glyphicon-pencil"></span>Изменить ' ~ modelTitleForms[0], { 0: 'update', id: model.id }, {
-            class: 'btn btn-primary',
-        }) | raw }}
-        {{ html.a('<span class="glyphicon glyphicon-trash"></span>Удалить ' ~ modelTitleForms[0], { 0: 'delete', id: model.id }, {
-            class: 'btn btn-danger',
-            data: {
-                confirm: yii.t('yii', 'Are you sure you want to delete this item?'),
-                method: 'post',
-            }
-        }) | raw }}
+        <a class="btn btn-primary" href="{{ path({ 0: 'update', id: model.id }) }}">
+            <span class="glyphicon glyphicon-pencil"></span>Изменить {{ modelTitleForms[0] }}
+        </a>
+        <a class="btn btn-danger" href="{{ path({ 0: 'update', id: model.id }) }}"
+                data-confirm="{{ yii.t('yii', 'Are you sure you want to delete this item?') }}"
+                data-method="post">
+            <span class="glyphicon glyphicon-trash"></span>Удалить {{ modelTitleForms[0] }}
+        </a>
     </p>
 
+    {{ use('yii/widgets/DetailView') }}
     {{ detailView_widget({
         model: model
     }) }}
