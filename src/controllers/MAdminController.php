@@ -30,7 +30,7 @@ class MAdminController extends Controller
     /**
      * @return string Name of managed model
      */
-    public function getModelClassName()
+    public function getManagedModelClass()
     {
         return ActiveRecord::className();
     }
@@ -71,7 +71,7 @@ class MAdminController extends Controller
     public function actionIndex()
     {
         /** @var ActiveRecord $searchModel */
-        $searchModel = \Yii::createObject($this->getModelClassName() . 'Search');
+        $searchModel = \Yii::createObject($this->getManagedModelClass() . 'Search');
         /** @noinspection PhpUndefinedMethodInspection */
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 
@@ -86,7 +86,7 @@ class MAdminController extends Controller
     public function actionCreate()
     {
         /** @var ActiveRecord $model */
-        $model = \Yii::createObject($this->getModelClassName());
+        $model = \Yii::createObject($this->getManagedModelClass());
 
         return $this->editModel($model);
     }
@@ -123,7 +123,9 @@ class MAdminController extends Controller
 
     public function actionDelete($id)
     {
+        $this->findModel($id)->delete();
 
+        return $this->redirect($this->getReturnUrl());
     }
 
     /**
@@ -153,7 +155,10 @@ class MAdminController extends Controller
     {
         return [
             'class' => ActionColumn::className(),
-            'template' => '{update} {delete}',
+            'template' => '{update}{delete}',
+            'contentOptions' => [
+                'class' => 'action-column',
+            ]
         ];
     }
 
@@ -213,7 +218,7 @@ class MAdminController extends Controller
      */
     protected function findModel($id)
     {
-        $model = call_user_func($this->getModelClassName() . '::findOne', $id);
+        $model = call_user_func($this->getManagedModelClass() . '::findOne', $id);
         if ($model === null) {
             throw new NotFoundHttpException('Модель не найдена');
         } else {
