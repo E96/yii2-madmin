@@ -137,7 +137,15 @@ class MAdminController extends Controller
 
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        if (!$this->findModel($id)->delete()) {
+            $chooseWord = PhpMorphy::castChosenWordBy($this->modelTitle);
+            if ($chooseWord) {
+                $str = 'Не удалось удалить ' . $chooseWord . ' ' . $this->modelTitleForms[0];
+            } else {
+                $str = 'Не далось удалить выбранную модель';
+            }
+            Yii::$app->session->setFlash('error', $str);
+        }
 
         return $this->redirect($this->getReturnUrl());
     }
