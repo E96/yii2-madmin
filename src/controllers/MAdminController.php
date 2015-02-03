@@ -174,7 +174,12 @@ class MAdminController extends Controller
         }
         $columns = array_keys($attributes);
         $columns[] = $this->getActionColumn();
-        array_unshift($columns, ['class' => SerialColumn::className()]);
+        array_unshift($columns, [
+            'class' => SerialColumn::className(),
+            'contentOptions' => [
+                'class' => 'action-column',
+            ],
+        ]);
 
         return $columns;
     }
