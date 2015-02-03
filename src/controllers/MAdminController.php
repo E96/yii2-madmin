@@ -183,7 +183,7 @@ class MAdminController extends Controller
             unset($attributes[$pk]);
         }
         $columns = array_keys($attributes);
-        if (array_intersect(['update', 'delete'], $this->disabledActions)) {
+        if (!array_intersect(['update', 'delete'], $this->disabledActions)) {
             $columns[] = $this->getActionColumn();
         }
         array_unshift($columns, [
