@@ -5,9 +5,10 @@
 {% endblock %}
 
 {% block buttons %}
-    <a class="btn btn-primary" href="{{ path(['create']) }}">
-        <span class="glyphicon glyphicon-plus"></span>Добавить {{ modelTitleForms[0] }}
-    </a>
+    {% if not 'create' in disabledActions %}
+    {{ html.a('<span class="glyphicon glyphicon-plus"></span>Добавить ' ~ modelTitleForms[0],
+        path(['create'], { class: 'btn btn-primary' }) }}
+    {% endif %}
 {% endblock %}
 
 {% block content %}

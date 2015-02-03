@@ -24,6 +24,11 @@ class MAdminController extends Controller
     public $modelTitle = 'Модель';
 
     /**
+     * @var string[] Disable some action like 'create', 'view', 'update', 'delete' with hiding corresponding buttons
+     */
+    public $disabledActions = [];
+
+    /**
      * @var array model human title in needed forms
      */
     protected $modelTitleForms = [];
@@ -69,10 +74,14 @@ class MAdminController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
+                        'allow' => false,
+                        'actions' => $this->disabledActions,
+                    ],
+                    [
                         'allow' => true,
                         'roles' => ['@'],
-                    ]
-                ]
+                    ],
+                ],
             ],
         ];
     }
@@ -88,6 +97,7 @@ class MAdminController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'modelTitleForms' => $this->modelTitleForms,
+            'disabledActions' => $this->disabledActions,
             'tableColumns' => $this->getTableColumns($searchModel),
         ]);
     }
@@ -189,9 +199,16 @@ class MAdminController extends Controller
      */
     public function getActionColumn()
     {
+        $template = '';
+        if (!in_array('update', $this->disabledActions)) {
+            $template .= '{update}';
+        }
+        if (!in_array('delete', $this->disabledActions)) {
+            $template .= '{delete}';
+        }
         return [
             'class' => ActionColumn::className(),
-            'template' => '{update}{delete}',
+            'template' => $template,
             'contentOptions' => [
                 'class' => 'action-column',
             ]
