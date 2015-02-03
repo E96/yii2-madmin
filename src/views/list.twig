@@ -1,16 +1,16 @@
-{{ set(this, 'title', 'Список ' ~ modelTitleForms[2]) }}
-{{ use('e96/madmin/MAdminAsset') }}
-{{ register_m_admin_asset() }}
+{% extends 'parent.twig' %}
 
-<div class="index">
-    <h1>{{ this.title }}</h1>
+{% block setup %}
+    {{ set(this, 'title', 'Список ' ~ modelTitleForms[2]) }}
+{% endblock %}
 
-    <p>
-        <a class="btn btn-primary" href="{{ path(['create']) }}">
-            <span class="glyphicon glyphicon-plus"></span>Добавить {{ modelTitleForms[0] }}
-        </a>
-    </p>
+{% block buttons %}
+    <a class="btn btn-primary" href="{{ path(['create']) }}">
+        <span class="glyphicon glyphicon-plus"></span>Добавить {{ modelTitleForms[0] }}
+    </a>
+{% endblock %}
 
+{% block content %}
     {{ gridView_widget({
         dataProvider: dataProvider,
         filterModel: searchModel,
@@ -20,4 +20,4 @@
             class: 'table table-striped table-condensed',
         }
     }) }}
-</div>
+{% endblock %}

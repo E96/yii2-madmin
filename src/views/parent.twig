@@ -1,0 +1,21 @@
+{% block setup %}{% endblock %}
+{{ use('e96/madmin/MAdminAsset') }}
+{{ register_m_admin_asset() }}
+
+<div>
+    <h1>{% block title %}{{ this.title }}{% endblock %}</h1>
+    {% block alerts %}
+        {{ alert_widget({
+            options: {
+                class: 'alert-danger',
+            },
+            body: app.session.getFlash('error')
+        }) }}
+    {% endblock %}
+
+    <p>
+        {% block buttons %}{% endblock %}
+    </p>
+
+    {% block content %}{% endblock %}
+</div>

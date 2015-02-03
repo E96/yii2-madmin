@@ -142,7 +142,7 @@ class MAdminController extends Controller
             if ($chooseWord) {
                 $str = 'Не удалось удалить ' . $chooseWord . ' ' . $this->modelTitleForms[0];
             } else {
-                $str = 'Не далось удалить выбранную модель';
+                $str = 'Не удалось удалить выбранную модель';
             }
             Yii::$app->session->setFlash('error', $str);
         }
