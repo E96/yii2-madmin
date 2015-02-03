@@ -183,7 +183,9 @@ class MAdminController extends Controller
             unset($attributes[$pk]);
         }
         $columns = array_keys($attributes);
-        $columns[] = $this->getActionColumn();
+        if (array_intersect(['update', 'delete'], $this->disabledActions)) {
+            $columns[] = $this->getActionColumn();
+        }
         array_unshift($columns, [
             'class' => SerialColumn::className(),
             'contentOptions' => [
