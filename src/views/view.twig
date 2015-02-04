@@ -8,11 +8,11 @@
     {#{{ html.a('<span class="glyphicon glyphicon-arrow-left"></span>Вернуться', returnUrl, {#}
         {#class: 'btn btn-default',#}
     {#}) | raw }}#}
-{% if not 'update' in disabledActions %}
+{% if not ('update' in disabledActions) %}
     {{ html.a('<span class="glyphicon glyphicon-pencil"></span>Изменить ' ~ modelTitleForms[0],
-        path({ 0: 'update', id: model.id }, { class: 'btn btn-primary' }) }}
+        path({ 0: 'update', id: model.id }, { class: 'btn btn-primary' }) | raw }}
 {% endif %}
-{% if not 'delete' in disabledActions %}
+{% if not ('delete' in disabledActions) %}
     {{ html.a('<span class="glyphicon glyphicon-trash"></span>Удалить ' ~ modelTitleForms[0],
         path({ 0: 'delete', id: model.id },
         {
@@ -22,7 +22,7 @@
                 method: 'post'
             }
         }
-    ) }}
+    ) | raw }}
 {% endif %}
 {% endblock %}
 
