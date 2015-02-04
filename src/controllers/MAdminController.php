@@ -7,6 +7,7 @@ use e96\madmin\helpers\PhpMorphy;
 use kartik\builder\Form;
 use Yii;
 use yii\db\ActiveRecord;
+use yii\db\BaseActiveRecord;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\grid\ActionColumn;
@@ -49,6 +50,9 @@ class MAdminController extends Controller
         return $this->getManagedModelClass() . 'Search';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
@@ -56,6 +60,10 @@ class MAdminController extends Controller
         $this->modelTitleForms = PhpMorphy::getNeededForms($this->modelTitle);
     }
 
+    /**
+     * @return array
+     * @see yii\filters\VerbFilter::$actions
+     */
     public function verbs()
     {
         return [
@@ -63,8 +71,23 @@ class MAdminController extends Controller
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
+        $accessRules = [
+            [
+                'allow' => true,
+                'roles' => ['@'],
+            ]
+        ];
+        if (!empty($this->disabledActions)) {
+            array_unshift($accessRules, [
+                'allow' => false,
+                'actions' => $this->disabledActions,
+            ]);
+        }
         return [
             'verbFilter' => [
                 'class' => VerbFilter::className(),
@@ -72,20 +95,15 @@ class MAdminController extends Controller
             ],
             'access' => [
                 'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => false,
-                        'actions' => $this->disabledActions,
-                    ],
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
+                'rules' => $accessRules,
             ],
         ];
     }
 
+    /**
+     * @return string
+     * @throws \yii\base\InvalidConfigException
+     */
     public function actionIndex()
     {
         /** @var ActiveRecord $searchModel */
@@ -102,6 +120,10 @@ class MAdminController extends Controller
         ]);
     }
 
+    /**
+     * @return string|\yii\web\Response
+     * @throws \yii\base\InvalidConfigException
+     */
     public function actionCreate()
     {
         /** @var ActiveRecord $model */
@@ -110,6 +132,11 @@ class MAdminController extends Controller
         return $this->editModel($model);
     }
 
+    /**
+     * @param string|int $id
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
+     */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
@@ -118,7 +145,7 @@ class MAdminController extends Controller
     }
 
     /**
-     * @param ActiveRecord $model
+     * @param BaseActiveRecord $model
      * @return string|\yii\web\Response
      */
     protected function editModel($model)
@@ -136,6 +163,12 @@ class MAdminController extends Controller
         }
     }
 
+    /**
+     * WIP
+     * @param string|int $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionView($id)
     {
         return $this->render('@madmin/views/view.twig', [
@@ -145,6 +178,12 @@ class MAdminController extends Controller
         ]);
     }
 
+    /**
+     * @param string|int $id
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException
+     * @throws \Exception
+     */
     public function actionDelete($id)
     {
         if (!$this->findModel($id)->delete()) {
