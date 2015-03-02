@@ -187,7 +187,7 @@ class MAdminController extends Controller
     public function actionDelete($id)
     {
         if (!$this->findModel($id)->delete()) {
-            Yii::$app->session->setFlash('error', $this->getFailDeleteExplanation());
+            Yii::$app->session->setFlash('danger', $this->getFailDeleteExplanation());
         }
 
         return $this->redirect($this->getReturnUrl());

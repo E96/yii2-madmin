@@ -5,16 +5,15 @@
 <div>
     <h1>{% block title %}{{ this.title }}{% endblock %}</h1>
     {% block alerts %}
-    {% if app.session.hasFlash('error') %}
-        {{ alert_widget({
-            options: {
-                class: 'alert-danger',
-            },
-            body: app.session.getFlash('error')
-        }) }}
-    {% endif %}
+        {% for key, text in app.session.getAllFlashes(true) %}
+            {{ alert_widget({
+                options: {
+                    class: 'alert-' ~ key,
+                },
+                body: text
+            }) }}
+        {% endfor %}
     {% endblock %}
-
     <p>
         {% block buttons %}{% endblock %}
     </p>
