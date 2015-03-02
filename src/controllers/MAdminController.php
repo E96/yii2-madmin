@@ -333,7 +333,7 @@ class MAdminController extends Controller
             $returnUrl = Yii::$app->request->referrer;
         }
         if (empty($returnUrl)) {
-            $returnUrl = Url::to([$this->uniqueId . '/index']);
+            $returnUrl = Url::to([$this->uniqueId . '/' . $this->defaultAction]);
         }
 
         return $returnUrl;
