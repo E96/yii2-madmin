@@ -1,0 +1,5 @@
+{% set modal = modal_begin({
+    header: '<h4 class="modal-title">' ~ this.title ~ '</h4>',
+}) %}
+    {% block content %}{% endblock %}
+{{ modal_end() }}

@@ -14,6 +14,18 @@
             }) }}
         {% endfor %}
     {% endblock %}
+    {% block modal %}
+        {% set modal = modal_begin({
+            size: 'modal-lg',
+        }) %}
+            {{ modal_end() }}
+        {{ this.registerJs("
+            $('[data-toggle=modal][href]').on('click', function () {
+                var $this = $(this);
+                $('#" ~ modal.id ~ " .modal-content').load($this.attr('href') + ' div.modal-content>div');
+            });
+        ") }}
+    {% endblock %}
     <p>
         {% block buttons %}{% endblock %}
     </p>
