@@ -24,7 +24,17 @@ class PhpMorphy
             $res[] = $form[0];
             $form = $phpMorphy->castFormByGramInfo(mb_strtoupper($word), null, ['ЕД', 'РД'], true);
             $res[] = $form[0];
-            $form = $phpMorphy->castFormByGramInfo(mb_strtoupper($word), null, ['МН', 'РД'], true);
+
+            $castGramem = 'МН';
+            $forms = $phpMorphy->getGramInfo(mb_strtoupper($word));
+            $forms = $forms[0];
+            foreach ($forms as $form) {
+                if (in_array('ИМ', $form['grammems'])) {
+                    $castGramem = array_intersect($form['grammems'], ['МР', 'НО']) ? 'ЕД' : 'МН';
+                    break;
+                }
+            }
+            $form = $phpMorphy->castFormByGramInfo(mb_strtoupper($word), null, [$castGramem, 'РД'], true);
             $res[] = $form[0];
 
             $res = array_map('mb_strtolower', $res);
