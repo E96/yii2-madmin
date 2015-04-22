@@ -9,10 +9,6 @@ class PhpMorphy
 {
     public static function getNeededForms($word)
     {
-        $arrayContains = function($needle, $haystack) {
-            return count(array_intersect($needle, $haystack)) == count($needle);
-        };
-        
         $cacheKey = __CLASS__ . __FUNCTION__ .  $word;
         $res = Yii::$app->cache->get($cacheKey);
         if ($res === false) {
@@ -28,17 +24,7 @@ class PhpMorphy
             $res[] = $form[0];
             $form = $phpMorphy->castFormByGramInfo(mb_strtoupper($word), null, ['ЕД', 'РД'], true);
             $res[] = $form[0];
-
-            $castGramem = 'МН';
-            $forms = $phpMorphy->getGramInfo(mb_strtoupper($word));
-            $forms = $forms[0];
-            foreach ($forms as $form) {
-                if (in_array('ИМ', $form['grammems'])) {
-                    $castGramem = $arrayContains(['МР', 'НО'], $form['grammems']) ? 'ЕД' : 'МН';
-                    break;
-                }
-            }
-            $form = $phpMorphy->castFormByGramInfo(mb_strtoupper($word), null, [$castGramem, 'РД'], true);
+            $form = $phpMorphy->castFormByGramInfo(mb_strtoupper($word), null, ['МН', 'РД'], true);
             $res[] = $form[0];
 
             $res = array_map('mb_strtolower', $res);
