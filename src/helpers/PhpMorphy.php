@@ -9,6 +9,10 @@ class PhpMorphy
 {
     public static function getNeededForms($word)
     {
+        $arrayContains = function($needle, $haystack) {
+            return count(array_intersect($needle, $haystack)) == count($needle);
+        };
+        
         $cacheKey = __CLASS__ . __FUNCTION__ .  $word;
         $res = Yii::$app->cache->get($cacheKey);
         if ($res === false) {
@@ -30,7 +34,7 @@ class PhpMorphy
             $forms = $forms[0];
             foreach ($forms as $form) {
                 if (in_array('ИМ', $form['grammems'])) {
-                    $castGramem = array_intersect($form['grammems'], ['МР', 'НО']) ? 'ЕД' : 'МН';
+                    $castGramem = $arrayContains(['МР', 'НО'], $form['grammems']) ? 'ЕД' : 'МН';
                     break;
                 }
             }
