@@ -57,7 +57,9 @@ class MAdminController extends Controller
     {
         parent::init();
 
-        $this->modelTitleForms = PhpMorphy::getNeededForms($this->modelTitle);
+        if (empty($this->modelTitleForms)) {
+            $this->modelTitleForms = PhpMorphy::getNeededForms($this->modelTitle);
+        }
     }
 
     /**
