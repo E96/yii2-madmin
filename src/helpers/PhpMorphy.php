@@ -3,6 +3,7 @@
 namespace e96\madmin\helpers;
 
 
+use phpMorphy_Util_MbstringOverloadFixer;
 use Yii;
 
 class PhpMorphy
@@ -14,6 +15,7 @@ class PhpMorphy
         if ($res === false) {
             $res = [];
 
+            phpMorphy_Util_MbstringOverloadFixer::fix();
             $phpMorphy = new \phpMorphy(
                 Yii::getAlias('@madmin/phpmorphy-dicts'),
                 'ru_RU',
