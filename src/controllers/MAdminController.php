@@ -7,7 +7,6 @@ use e96\madmin\helpers\PhpMorphy;
 use kartik\builder\Form;
 use Yii;
 use yii\db\ActiveRecord;
-use yii\db\BaseActiveRecord;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\grid\ActionColumn;
@@ -34,6 +33,16 @@ class MAdminController extends Controller
      */
     protected $modelTitleForms = [];
 
+    /**
+     * @var string actionIndex view file
+     */
+    public $listView = '@madmin/views/list.twig';
+
+    /**
+     * @var string actionCreate/actionUpdate view file
+     */
+    public $formView = '@madmin/views/edit.twig';
+    
     /**
      * @return string Name of managed model
      */
@@ -113,7 +122,7 @@ class MAdminController extends Controller
         /** @noinspection PhpUndefinedMethodInspection */
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('@madmin/views/list.twig', [
+        return $this->render($this->listView, [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'modelTitleForms' => $this->modelTitleForms,
@@ -147,7 +156,7 @@ class MAdminController extends Controller
     }
 
     /**
-     * @param BaseActiveRecord $model
+     * @param ActiveRecord $model
      * @return string|\yii\web\Response
      */
     protected function editModel($model)
@@ -156,7 +165,7 @@ class MAdminController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->save(false)) {
             return $this->redirect($this->getReturnUrl());
         } else {
-            return $this->render('@madmin/views/edit.twig', [
+            return $this->render($this->formView, [
                 'model' => $model,
                 'returnUrl' => $this->getReturnUrl(),
                 'modelTitleForms' => $this->modelTitleForms,
