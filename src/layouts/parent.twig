@@ -6,12 +6,23 @@
     <h1>{% block title %}{{ this.title }}{% endblock %}</h1>
     {% block alerts %}
         {% for key, text in app.session.getAllFlashes(true) %}
-            {{ alert_widget({
-                options: {
-                    class: 'alert-' ~ key,
-                },
-                body: text
-            }) }}
+            {% if text is iterable %}
+                {% for oneText in text %}
+                    {{ alert_widget({
+                        options: {
+                            class: 'alert-' ~ key,
+                        },
+                        body: oneText
+                    }) }}
+                {% endfor %}
+            {% else %}
+                {{ alert_widget({
+                    options: {
+                        class: 'alert-' ~ key,
+                    },
+                    body: text
+                }) }}
+            {% endif %}
         {% endfor %}
     {% endblock %}
     {% block modal %}
