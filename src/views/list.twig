@@ -12,13 +12,14 @@
 {% endblock %}
 
 {% block content %}
+    {{ use('kartik/grid/GridView') }}
     {{ gridView_widget({
         dataProvider: dataProvider,
         filterModel: searchModel,
         columns: tableColumns,
-        layout: '{summary}\n<div class="table-responsive">{items}</div>\n{pager}',
-        tableOptions: {
-            class: 'table table-striped table-condensed',
-        }
+        bordered: false,
+        condensed: true,
+        export: false,
+        resizableColumns: false,
     }) }}
 {% endblock %}

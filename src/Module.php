@@ -42,5 +42,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
                 Yii::$app->view->renderers['twig']['uses'][] = 'yii\grid';
             }
         }
+        if (!Yii::$app->hasModule('gridview')) {
+            Yii::$app->setModule('gridview', [
+                'class' => \kartik\grid\Module::class,
+            ]);
+        }
     }
 }
