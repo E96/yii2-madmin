@@ -22,18 +22,34 @@ class PhpMorphy
                 ['storage' => PHPMORPHY_STORAGE_FILE]
             );
             mb_internal_encoding('UTF-8');
-            $form = $phpMorphy->castFormByGramInfo(mb_strtoupper($word), null, ['ЕД', 'ВН'], true);
-            $res[] = $form[0];
-            $form = $phpMorphy->castFormByGramInfo(mb_strtoupper($word), null, ['ЕД', 'РД'], true);
-            $res[] = $form[0];
-            $form = $phpMorphy->castFormByGramInfo(mb_strtoupper($word), null, ['МН', 'РД'], true);
-            $res[] = $form[0];
+
+            $res[] = self::castByGramInfo($phpMorphy, $word, ['ЕД', 'ВН']);
+            $res[] = self::castByGramInfo($phpMorphy, $word, ['ЕД', 'РД']);
+            $res[] = self::castByGramInfo($phpMorphy, $word, ['МН', 'РД']);
 
             $res = array_map('mb_strtolower', $res);
             Yii::$app->cache->set($cacheKey, $res);
         }
 
         return $res;
+    }
+
+    /**
+     * @param \phpMorphy $phpMorphy
+     * @param $word
+     * @param $gramInfo
+     * @return string
+     */
+    protected static function castByGramInfo($phpMorphy, $word, $gramInfo)
+    {
+        $words = explode(' ', mb_strtoupper($word));
+
+        $form = [];
+        foreach ($words as $word) {
+            $forms = $phpMorphy->castFormByGramInfo($word, null, $gramInfo, true);
+            $form []= $forms[0];
+        }
+        return implode(' ', $form);
     }
 
     /**
