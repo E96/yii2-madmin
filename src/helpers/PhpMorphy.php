@@ -23,9 +23,9 @@ class PhpMorphy
             );
             mb_internal_encoding('UTF-8');
 
-            $res[] = self::castByGramInfo($phpMorphy, $word, ['ЕД', 'ВН']);
-            $res[] = self::castByGramInfo($phpMorphy, $word, ['ЕД', 'РД']);
-            $res[] = self::castByGramInfo($phpMorphy, $word, ['МН', 'РД']);
+            $res[] = self::castByGramInfo($phpMorphy, $word, ['ЕД', 'ВН']); // добавить
+            $res[] = self::castByGramInfo($phpMorphy, $word, ['ЕД', 'РД']); // редактирование
+            $res[] = self::castByGramInfo($phpMorphy, $word, ['МН', 'РД']); // список
 
             $res = array_map('mb_strtolower', $res);
             Yii::$app->cache->set($cacheKey, $res);
@@ -36,20 +36,56 @@ class PhpMorphy
 
     /**
      * @param \phpMorphy $phpMorphy
-     * @param $word
-     * @param $gramInfo
+     * @param string $word
+     * @param string[] $targetGramInfo
      * @return string
      */
-    protected static function castByGramInfo($phpMorphy, $word, $gramInfo)
+    protected static function castByGramInfo($phpMorphy, $word, $targetGramInfo)
     {
         $words = explode(' ', mb_strtoupper($word));
 
         $form = [];
+        $originalTargetGramInfo = $targetGramInfo;
         foreach ($words as $word) {
-            $forms = $phpMorphy->castFormByGramInfo($word, null, $gramInfo, true);
+            $targetGramInfo = $originalTargetGramInfo;
+
+            $gramInfo = $phpMorphy->getGramInfo($word);
+            $gramInfo = self::selectAcceptableForm($gramInfo);
+            if ($gramInfo['pos'] == 'ПРИЧАСТИЕ') {
+                // учитываем залог у причастия
+                $targetGramInfo[] = in_array('СТР', $gramInfo['grammems']) ? 'СТР' : 'ДСТ';
+            }
+            if ($gramInfo['pos'] == 'С') {
+                // Если число существительного не единственное, используем его
+                if (!array_intersect($gramInfo['grammems'], ['ЕД'])) {
+                    unset($targetGramInfo[0]);
+                    $targetGramInfo[0] = 'МН';
+                }
+                // Если падеж существительного не именительный, тогда используем его  
+                if (!array_intersect($gramInfo['grammems'], ['ИМ', 'ВН'])) {
+                    unset($targetGramInfo[1]);
+                    $padezh = array_intersect($gramInfo['grammems'], ['РД', 'ДТ', 'ТВ', 'ПР']);
+                    $targetGramInfo[1] = reset($padezh);
+                }
+            }
+
+            $forms = $phpMorphy->castFormByGramInfo($word, $gramInfo['pos'], $targetGramInfo, true);
             $form []= $forms[0];
         }
         return implode(' ', $form);
+    }
+
+    protected static function selectAcceptableForm($gramInfo)
+    {
+        foreach (['С', 'П', 'ПРИЧАСТИЕ'] as $pos) {
+            foreach ($gramInfo as $entry) {
+                if ($entry[0]['pos'] == $pos) {
+                    return $entry[0];
+                }
+            }
+        }
+        
+        return $gramInfo[0][0];
     }
 
     /**
