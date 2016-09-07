@@ -3,7 +3,11 @@
 {{ register_m_admin_asset() }}
 
 <div>
-    <h1>{% block title %}{{ this.title }}{% endblock %}</h1>
+    <div class="page-header">
+    {% block header %}
+        <h1>{% block title %}{{ this.title }}{% endblock %}</h1>
+    {% endblock %}
+    </div>
     {% block alerts %}
         {% for key, text in app.session.getAllFlashes(true) %}
             {% if text is iterable %}
@@ -29,7 +33,7 @@
         {% set modal = modal_begin({
             size: 'modal-lg',
         }) %}
-            {{ modal_end() }}
+        {{ modal_end() }}
         {{ this.registerJs("
             $('[data-toggle=modal][href]').on('click', function () {
                 var $this = $(this);
