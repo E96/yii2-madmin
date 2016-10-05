@@ -2,8 +2,8 @@
 {{ use('e96/madmin/MAdminAsset') }}
 {{ register_m_admin_asset() }}
 
-<div>
-    <div>
+<div id="root">
+    <div id="header">
     {% block header %}
         <h1>{% block title %}{{ this.title }}{% endblock %}</h1>
     {% endblock %}
