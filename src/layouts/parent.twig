@@ -35,7 +35,7 @@
         }) %}
         {{ modal_end() }}
         {{ this.registerJs("
-            $('[data-toggle=modal][href]').on('click', function () {
+            $('#root').on('click', '[data-toggle=modal][href]', function () {
                 var $this = $(this);
                 $('#" ~ modal.id ~ " .modal-content').load($this.attr('href') + ' div.modal-content>div');
             });
