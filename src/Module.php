@@ -35,11 +35,15 @@ class Module extends \yii\base\Module implements BootstrapInterface
             ];
         } else {
             Yii::$app->view->renderers['twig']['globals']['html'] = '\yii\helpers\Html';
-            if (!array_search('yii\bootstrap', Yii::$app->view->renderers['twig']['uses'])) {
-                Yii::$app->view->renderers['twig']['uses'][] = 'yii\bootstrap';
-            }
-            if (!array_search('yii\grid', Yii::$app->view->renderers['twig']['uses'])) {
-                Yii::$app->view->renderers['twig']['uses'][] = 'yii\grid';
+            if (array_key_exists('uses', Yii::$app->view->renderers['twig'])) {
+                if (!array_search('yii\bootstrap', Yii::$app->view->renderers['twig']['uses'])) {
+                    Yii::$app->view->renderers['twig']['uses'][] = 'yii\bootstrap';
+                }
+                if (!array_search('yii\grid', Yii::$app->view->renderers['twig']['uses'])) {
+                    Yii::$app->view->renderers['twig']['uses'][] = 'yii\grid';
+                }
+            } else {
+                Yii::$app->view->renderers['twig']['uses'] = ['yii\bootstrap', 'yii\grid'];
             }
         }
         if (!Yii::$app->hasModule('gridview')) {
