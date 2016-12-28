@@ -5,6 +5,7 @@ namespace e96\madmin\controllers;
 
 use e96\madmin\helpers\PhpMorphy;
 use kartik\builder\Form;
+use kartik\form\ActiveForm;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\filters\AccessControl;
@@ -73,7 +74,7 @@ class MAdminController extends Controller
 
     /**
      * @return array
-     * @see yii\filters\VerbFilter::$actions
+     * @see \yii\filters\VerbFilter::$actions
      */
     public function verbs()
     {
@@ -170,6 +171,7 @@ class MAdminController extends Controller
                 'returnUrl' => $this->getReturnUrl(),
                 'modelTitleForms' => $this->modelTitleForms,
                 'formElements' => $this->getFormElements($model),
+                'formProperties' => $this->getFormProperties(),
             ]);
         }
     }
@@ -268,11 +270,11 @@ class MAdminController extends Controller
     }
 
     /**
-     * Format same as kartik\builder\Form::$attributes
+     * Format same as \kartik\builder\Form::$attributes
      * @param ActiveRecord $model
      * @return array
      *
-     * @see kartik\builder\Form::$attributes
+     * @see \kartik\builder\Form::$attributes
      */
     public function getFormElements($model)
     {
@@ -290,6 +292,14 @@ class MAdminController extends Controller
         return $res;
     }
 
+    /**
+     * @return array
+     */
+    public function getFormProperties()
+    {
+        return ['type' => ActiveForm::TYPE_HORIZONTAL];
+    }
+    
     /**
      * @param ActiveRecord $model
      * @return array

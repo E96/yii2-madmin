@@ -8,9 +8,7 @@
     {{ use('kartik/form/ActiveForm') }}
     {{ use('kartik/builder/Form') }}
 
-    {% set form = activeForm_begin({
-        type: 'horizontal',
-    }) %}
+    {% set form = activeForm_begin(formProperties) %}
     {{ html.hiddenInput('_returnUrl', returnUrl) | raw }}
     {{ form_widget({
         model: model,
