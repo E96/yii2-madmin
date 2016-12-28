@@ -16,6 +16,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class MAdminController extends Controller
 {
@@ -162,8 +163,16 @@ class MAdminController extends Controller
      */
     protected function editModel($model)
     {
+        $modelLoaded = $model->load(Yii::$app->request->post());
+
+        // ajax validation
+        if (Yii::$app->request->isAjax && $modelLoaded) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+
         // validate() && save(false) because of CantSave exception
-        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->save(false)) {
+        if ($modelLoaded && $model->validate() && $model->save(false)) {
             return $this->redirect($this->getReturnUrl());
         } else {
             return $this->render($this->formView, [
